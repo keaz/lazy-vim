@@ -18,3 +18,7 @@ vim.keymap.set("n", "<leader>fi", "<cmd>Telescope lsp_implementations<cr>", { no
 
 vim.keymap.set('n', '<leader>e', ':Neotree filesystem reveal left<CR>', {})
 vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
+vim.keymap.set("n", "<leader>ga", "<cmd>Git add .<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>gc", "<cmd>Git commit<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>gh", "<cmd>Gitsigns preview_hunk<cr>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>gb", "<cmd>Gitsigns toggle_current_line_blame<cr>", { noremap = true, silent = true })

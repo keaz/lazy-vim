@@ -11,7 +11,7 @@ return {
             package_uninstalled = "✗"
           }
         },
-        ensure_installed = { "vscode-lldb" }
+        ensure_installed = { "vscode-lldb", "java-test", "java-debug-adapter" }
       })
     end
   },

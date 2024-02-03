@@ -138,6 +138,6 @@ return {
     }
   end,
   config = function(_, opts)
-    require("rust-tools").setup(opts)
+    require("rust-tools").setup(opts.rust)
   end,
 }

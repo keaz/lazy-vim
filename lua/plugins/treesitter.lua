@@ -62,7 +62,8 @@ return {
       "yaml",
       "ron",
       "rust",
-      "java"
+      "java",
+      "tsx",
     },
     incremental_selection = {
       enable = true,

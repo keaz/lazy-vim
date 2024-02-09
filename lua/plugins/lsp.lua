@@ -27,10 +27,23 @@ return {
           end,
           capabilities = capabilities,
         },
+        tsserver = {
+          on_attach = function(_, bufnr)
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              callback = function()
+                vim.lsp.buf.format({ async = false })
+              end,
+            })
+          end,
+          capabilities = capabilities,
+          filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
+        },
       }
     end,
     config = function(_, opts)
       require("lspconfig").lua_ls.setup(opts.lua)
+      require("lspconfig").tsserver.setup(opts.tsserver)
       for name, icon in pairs(require("lazyvim.config").icons.diagnostics) do
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })

@@ -69,6 +69,9 @@ return {
         -- LSP Server Settings
         ---@type lspconfig.options
         servers = {
+          rust_analyzer = {
+            enabled = false,
+          },
           lua_ls = {
             -- mason = false, -- set to false if you don't want this server to be installed with mason
             -- Use this to add any additional keymaps
@@ -112,6 +115,9 @@ return {
           -- end,
           -- Specify * to use this function as a fallback for any server
           -- ["*"] = function(server, opts) end,
+          rust_analyzer = function(_, opts)
+            return true
+          end,
         },
       }
     end,
@@ -293,4 +299,3 @@ return {
     end,
   },
 }
-

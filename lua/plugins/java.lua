@@ -55,7 +55,9 @@ return {
     opts = {
       -- make sure mason installs the server
       servers = {
-        jdtls = {},
+        jdtls = {
+          enable = false,
+        },
       },
       setup = {
         jdtls = function()
@@ -94,15 +96,15 @@ return {
         cmd = { vim.fn.exepath("jdtls") },
         full_cmd = function(opts)
           local install_path = require("mason-registry").get_package("jdtls"):get_install_path()
-          
+
           local fname = vim.api.nvim_buf_get_name(0)
           local root_dir = opts.root_dir(fname)
           local project_name = opts.project_name(root_dir)
           local cmd = vim.deepcopy(opts.cmd)
           if project_name then
             vim.list_extend(cmd, {
-              "-javaagent:" .. install_path .. "/lombok.jar", 
-              '-Xbootclasspath/a:' .. install_path .. "/lombok.jar", 
+              "-javaagent:" .. install_path .. "/lombok.jar",
+              "-Xbootclasspath/a:" .. install_path .. "/lombok.jar",
               "-configuration",
               opts.jdtls_config_dir(project_name),
               "-data",
@@ -244,3 +246,4 @@ return {
     end,
   },
 }
+

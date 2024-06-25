@@ -1,7 +1,6 @@
 -- This is the same as in lspconfig.server_configurations.jdtls, but avoids
 -- needing to require that when this module loads.
 local java_filetypes = { "java" }
-
 -- Utility function to extend or override a config table, similar to the way
 -- that Plugin.opts works.
 ---@param config table
@@ -101,11 +100,30 @@ return {
           end
         end,
 
+        launcher_version = function(directory)
+          local prefix = "org.eclipse.equinox.launcher_"
+          local handle = io.popen("ls " .. directory)
+          if not handle then
+            return nil
+          end
+
+          local result = handle:read("*a")
+          handle:close()
+
+          for file in string.gmatch(result, "[^\r\n]+") do
+            if file:sub(1, #prefix) == prefix then
+              return file
+            end
+          end
+          return nil
+        end,
+
         -- How to run jdtls. This can be overridden to a full java command-line
         -- if the Python wrapper script doesn't suffice.
         full_cmd = function(opts)
           local install_path = require("mason-registry").get_package("jdtls"):get_install_path()
           local shared_config = opts.shared_config(install_path)
+          local launcher_version = opts.launcher_version(install_path .. "/plugins")
           local fname = vim.api.nvim_buf_get_name(0)
           local root_dir = opts.root_dir(fname)
           local project_name = opts.project_name(root_dir)
@@ -127,7 +145,7 @@ return {
             "java.base/java.lang=ALL-UNNAMED",
             "-javaagent:" .. install_path .. "/lombok.jar",
             "-jar",
-            "" .. install_path .. "/plugins/org.eclipse.equinox.launcher_1.6.800.v20240330-1250.jar",
+            "" .. install_path .. "/plugins/" .. launcher_version,
             "-configuration ",
             opts.jdtls_config_dir(project_name),
             "-data",

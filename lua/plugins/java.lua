@@ -91,26 +91,48 @@ return {
           return vim.fn.stdpath("cache") .. "/jdtls/" .. project_name .. "/workspace"
         end,
 
+        shared_config = function(jdtls_install_path)
+          if vim.loop.os_uname().sysname == "Darwin" then
+            return jdtls_install_path .. "/config_mac"
+          elseif vim.loop.os_uname().sysname == "Linux" then
+            return jdtls_install_path .. "/config_linux"
+          else
+            return jdtls_install_path .. "/config_win"
+          end
+        end,
+
         -- How to run jdtls. This can be overridden to a full java command-line
         -- if the Python wrapper script doesn't suffice.
-        cmd = { vim.fn.exepath("jdtls") },
         full_cmd = function(opts)
           local install_path = require("mason-registry").get_package("jdtls"):get_install_path()
-
+          local shared_config = opts.shared_config(install_path)
           local fname = vim.api.nvim_buf_get_name(0)
           local root_dir = opts.root_dir(fname)
           local project_name = opts.project_name(root_dir)
-          local cmd = vim.deepcopy(opts.cmd)
-          if project_name then
-            vim.list_extend(cmd, {
-              "-javaagent:" .. install_path .. "/lombok.jar",
-              "-Xbootclasspath/a:" .. install_path .. "/lombok.jar",
-              "-configuration",
-              opts.jdtls_config_dir(project_name),
-              "-data",
-              opts.jdtls_workspace_dir(project_name),
-            })
-          end
+          local cmd = {
+            "java",
+            "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+            "-Dosgi.bundles.defaultStartLevel=4",
+            "-Declipse.product=org.eclipse.jdt.ls.core.product",
+            "-Dosgi.checkConfiguration=true",
+            "-Dlog.protocol=true",
+            "-Dosgi.sharedConfiguration.area=" .. shared_config,
+            "-Dosgi.sharedConfiguration.area.readOnly=true",
+            "-Dosgi.configuration.cascaded=true",
+            "-Xms1G",
+            "--add-modules=ALL-SYSTEM",
+            "--add-opens",
+            "java.base/java.util=ALL-UNNAMED",
+            "--add-opens",
+            "java.base/java.lang=ALL-UNNAMED",
+            "-javaagent:" .. install_path .. "/lombok.jar",
+            "-jar",
+            "" .. install_path .. "/plugins/org.eclipse.equinox.launcher_1.6.800.v20240330-1250.jar",
+            "-configuration ",
+            opts.jdtls_config_dir(project_name),
+            "-data",
+            opts.jdtls_workspace_dir(project_name),
+          }
           return cmd
         end,
 
@@ -124,6 +146,25 @@ return {
               parameterNames = {
                 enabled = "all",
               },
+            },
+            format = {
+              enable = true,
+              defaultConfig = {
+                indent_style = "space",
+                indent_size = "4",
+              },
+            },
+            saveActions = {
+              organizeImports = true,
+            },
+            sources = {
+              organizeImports = {
+                starThreshold = 9999,
+                staticStarThreshold = 9999,
+              },
+            },
+            flags = {
+              allow_incremental_sync = true,
             },
           },
         },
@@ -246,4 +287,3 @@ return {
     end,
   },
 }
-

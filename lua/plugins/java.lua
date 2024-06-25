@@ -184,6 +184,12 @@ return {
             flags = {
               allow_incremental_sync = true,
             },
+            eclipse = {
+              downloadSources = true,
+            },
+            maven = {
+              downloadSources = true,
+            },
           },
         },
       }

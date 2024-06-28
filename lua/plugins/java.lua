@@ -160,35 +160,77 @@ return {
         test = true,
         settings = {
           java = {
-            inlayHints = {
-              parameterNames = {
-                enabled = "all",
-              },
+            configuration = {
+              updateBuildConfiguration = "interactive",
             },
-            format = {
-              enable = true,
-              defaultConfig = {
-                indent_style = "space",
-                indent_size = "4",
-              },
+            autobuild = {
+              enabled = true,
             },
             saveActions = {
               organizeImports = true,
             },
-            sources = {
-              organizeImports = {
-                starThreshold = 9999,
-                staticStarThreshold = 9999,
+            cleanup = {
+              actionsOnSave = {
+                "qualifyStaticMembers",
+                "qualifyMembers",
+                "addDeprecated",
+                "stringConcatToTextBlock",
+                "instanceofPatternMatch",
+                "lambdaExpression",
+                "switchExpression",
               },
             },
-            flags = {
-              allow_incremental_sync = true,
+            imports = {
+              maven = {
+                enabled = true,
+                downloadSources = true,
+              },
+              gradle = {
+                enabled = true,
+              },
             },
             eclipse = {
               downloadSources = true,
             },
             maven = {
               downloadSources = true,
+              updateSnapshots = true,
+            },
+            format = {
+              enabled = true,
+              comments = {
+                enable = true,
+              },
+              onType = {
+                enabled = true,
+              },
+              insertSpaces = true,
+              tabSize = 4,
+            },
+            implementationsCodeLens = {
+              enabled = true,
+            },
+            signatureHelp = {
+              enabled = true,
+            },
+            jdtl = {
+              ls = {
+                lombokSupport = {
+                  enabled = true,
+                },
+              },
+            },
+            symbol = {
+              includeSourceMethodDeclarations = true,
+            },
+            referencesCodeLens = {
+              enabled = true,
+            },
+            contentProvider = {
+              preferred = "fernflower",
+            },
+            codeGeneration = {
+              generateComments = true,
             },
           },
         },
